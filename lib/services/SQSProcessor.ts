@@ -2,9 +2,10 @@ import { Events } from './events.enum';
 import { UserService } from './User';
 import { PostService } from './Post';
 import { PostDLLService } from './PostDLL';
-import { IPostDLL } from '../DB/Models/Post-DLL';
+import type { IPostDLL } from '../DB/Models/Post-DLL';
 import type { IPost } from '../DB/Models/Post';
 import type mongoose from 'mongoose';
+import { ViewService } from './ViewService';
 
 
 class SQSProcessorService {
@@ -40,10 +41,11 @@ class SQSProcessorService {
   private static async _handleMessageEventsSentBySNS(parsedMessage: any) {
     const {
       EVENT_TYPE, user, userId, token, updatedUser, post, postId,
-      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL
+      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL,
+      viewedBy
     } = parsedMessage;
     console.log(EVENT_TYPE, user, userId, token, updatedUser, post, postId,
-      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL);
+      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL, viewedBy);
     switch (EVENT_TYPE) {
       case Events.userCreatedByPhone:
         return this._handleUserCreationByPhone(user, userId);
@@ -63,6 +65,8 @@ class SQSProcessorService {
         return this._handlePostDLLUpdate(updatedPostDLL, postDLLId);
       case Events.postDLLDelete:
         return this._handlePostDLLDelete(postDLLId);
+      case Events.postView:
+        return this._handlePostView(postId, viewedBy);
       default:
         console.warn(`Unhandled event type: ${EVENT_TYPE}`);
         break;
@@ -146,6 +150,15 @@ class SQSProcessorService {
       await PostDLLService.deleteNode(postDLLId);
     } catch (error) {
       console.error('_handlePostDLLDelete-error', error);
+      throw error;
+    }
+  }
+
+  private static async _handlePostView(postId: mongoose.Types.ObjectId, viewedBy: mongoose.Types.ObjectId) {
+    try {
+      await ViewService.updatePostView(postId, viewedBy);
+    } catch (error) {
+      console.error('_handlePostView-error', error);
       throw error;
     }
   }

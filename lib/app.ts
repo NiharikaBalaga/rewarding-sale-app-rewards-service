@@ -47,7 +47,7 @@ async function bootstrap() {
 
   // add prefix
   const apiRouter = express.Router();
-  apiRouter.use('/reward', routes); // Prefixing routes with '/post'
+  apiRouter.use('/rewards', routes); // Prefixing routes with '/post'
   app.use('/api', apiRouter); // Prefixing all routes with '/api'
 
 

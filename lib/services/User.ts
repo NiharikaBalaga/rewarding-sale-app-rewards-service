@@ -1,5 +1,6 @@
 import UserModel from '../DB/Models/User';
 import UserTokenBlacklistModel from '../DB/Models/User-Token-Blacklist';
+import type mongoose from 'mongoose';
 
 class UserService{
 
@@ -43,6 +44,23 @@ class UserService{
     return UserTokenBlacklistModel.findOne({
       token: accessToken
     });
+  }
+
+  public static async addPoints(userId: mongoose.Types.ObjectId  | string, pointsToAdd: number = 0) {
+    const user = await UserModel.findById(userId);
+    if (user) {
+      const newPoints = user.points + pointsToAdd;
+      await UserModel.findByIdAndUpdate(userId, {
+        points: newPoints
+      });
+    }
+    return true;
+  }
+
+  public static async getPoints(userId: mongoose.Types.ObjectId  | string) {
+    const user = await UserModel.findById(userId);
+
+    return user?.points ? user.points : 0;
   }
 
 }
