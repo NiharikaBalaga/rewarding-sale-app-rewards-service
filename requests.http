@@ -1,0 +1,20 @@
+### Get User Points
+GET http://localhost:3006/api/rewards/user/points
+content-type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjBkYWJiZDljYmE3MDAzMjk1NDJhMjMiLCJwaG9uZU51bWJlciI6IjQzNy01NTYtNDAzNSIsImlhdCI6MTcxMjE3MTk2NSwiZXhwIjoxNzE0NzYzOTY1fQ._by1Zj-xIdomc6grXkOvzGCwClf6kwoBoIZMhK4shLU
+
+### Get User Points for post
+GET http://localhost:3006/api/rewards/user/6615f0ea87aa6360551f89d1/points
+content-type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjBkYWJiZDljYmE3MDAzMjk1NDJhMjMiLCJwaG9uZU51bWJlciI6IjQzNy01NTYtNDAzNSIsImlhdCI6MTcxMjE3MTk2NSwiZXhwIjoxNzE0NzYzOTY1fQ._by1Zj-xIdomc6grXkOvzGCwClf6kwoBoIZMhK4shLU
+
+
+### Get Post Views
+GET http://localhost:3006/api/rewards/views/6615f0ea87aa6360551f89d1
+content-type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjBkYWJiZDljYmE3MDAzMjk1NDJhMjMiLCJwaG9uZU51bWJlciI6IjQzNy01NTYtNDAzNSIsImlhdCI6MTcxMjE3MTk2NSwiZXhwIjoxNzE0NzYzOTY1fQ._by1Zj-xIdomc6grXkOvzGCwClf6kwoBoIZMhK4shLU
+
+### Get User Posts With Points
+GET http://localhost:3006/api/rewards/user-posts-points
+content-type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjBkYWJiZDljYmE3MDAzMjk1NDJhMjMiLCJwaG9uZU51bWJlciI6IjQzNy01NTYtNDAzNSIsImlhdCI6MTcxMjE3MTk2NSwiZXhwIjoxNzE0NzYzOTY1fQ._by1Zj-xIdomc6grXkOvzGCwClf6kwoBoIZMhK4shLU

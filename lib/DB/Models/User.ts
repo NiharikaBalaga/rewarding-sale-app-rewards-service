@@ -19,6 +19,7 @@ export interface IUser extends Document {
   isBlocked: boolean,
   refreshToken: string | null,
   lastLocation: Location,
+  points: number,
 }
 
 const UserSchema: mongoose.Schema = new mongoose.Schema({
@@ -52,6 +53,11 @@ const UserSchema: mongoose.Schema = new mongoose.Schema({
 
   refreshToken: {
     type: String
+  },
+
+  points: {
+    type: Number,
+    default: 0
   },
 
   lastLocation: {

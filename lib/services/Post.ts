@@ -1,6 +1,8 @@
 import type { IPost } from '../DB/Models/Post';
 import PostModel from '../DB/Models/Post';
 import type mongoose from 'mongoose';
+import { PostStatus } from '../DB/Models/post-status.enum';
+import { PointsService } from './PointsService';
 
 class PostService {
 
@@ -10,7 +12,10 @@ class PostService {
       if (existingPost) throw new Error('Post With Given Id already exists');
 
       const newPost = new PostModel({ ...post });
-      return newPost.save();
+      await newPost.save();
+      // init post points
+      await PointsService.initPostPoints(postId, post.userId);
+      return newPost;
     } catch (error) {
       throw error;
     }
@@ -27,7 +32,12 @@ class PostService {
   }
 
   static async updatePost(updatedPost: IPost, postId: mongoose.Types.ObjectId) {
-    return this._update(postId, updatedPost);
+    const _updatedPost = await this._update(postId, updatedPost);
+    if (_updatedPost && _updatedPost.status === PostStatus.published) {
+      // We should give points for published points
+      await PointsService.postPublished(_updatedPost);
+    }
+    return _updatedPost;
   }
 
   static async deletePost(postId: string | mongoose.Types.ObjectId) {
