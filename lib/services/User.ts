@@ -69,6 +69,16 @@ class UserService{
     return user?.points ? user.points : 0;
   }
 
+  public static async updatePointsSNS(userObject: any, userId: string) {
+    const user = await UserModel.findById(userId);
+    if (user) {
+      await UserModel.findByIdAndUpdate(userId, {
+        points: userObject.points
+      });
+    }
+    return true;
+  }
+
 }
 
 

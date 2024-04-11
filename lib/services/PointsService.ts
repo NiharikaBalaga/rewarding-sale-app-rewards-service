@@ -1,6 +1,6 @@
 import type mongoose from 'mongoose';
 import type { IPost } from '../DB/Models/Post';
-import PostPointsModel from '../DB/Models/Post-points.schema';
+import PostPointsModel, {IPostPointsSchema} from '../DB/Models/Post-points.schema';
 import { UserService } from './User';
 import {SNSService} from "./SNS";
 
@@ -91,5 +91,17 @@ export class PointsService {
         createdAt: 'descending'
       });
     return userPostsPoints;
+  }
+
+  public static async updatePostPointsSNS(postPoints: IPostPointsSchema) {
+    // Update Post Points
+    const postPointUpdated = await PostPointsModel.findOneAndUpdate({
+      postId: postPoints.postId,
+      userId: postPoints.userId
+    }, {
+      points: postPoints.points,
+    }, { new: true });
+
+    return true;
   }
 }
