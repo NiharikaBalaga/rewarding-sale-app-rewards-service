@@ -2,17 +2,24 @@ import type mongoose from 'mongoose';
 import type { IPost } from '../DB/Models/Post';
 import PostPointsModel from '../DB/Models/Post-points.schema';
 import { UserService } from './User';
+import {SNSService} from "./SNS";
 
 export class PointsService {
   public static async givePointsForPost(postId: mongoose.Types.ObjectId
   | string, userId: mongoose.Types.ObjectId  | string, points: number, shouldUpdateUserPoints = false) {
     try {
-      await PostPointsModel.findOneAndUpdate({
+      const postPointUpdated =await PostPointsModel.findOneAndUpdate({
         postId,
         userId
       }, {
         points,
-      });
+      }, { new: true });
+      console.log('--------------------- addPoints userUpdated: ', postPointUpdated);
+      // SNS Event
+      if (postPointUpdated) {
+        SNSService.updatePostPointsRewards(postPointUpdated);
+      }
+
       // add points to the user profile
       try {
         if (shouldUpdateUserPoints)
