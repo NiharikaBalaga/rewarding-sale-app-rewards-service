@@ -1,6 +1,7 @@
 import UserModel from '../DB/Models/User';
 import UserTokenBlacklistModel from '../DB/Models/User-Token-Blacklist';
 import type mongoose from 'mongoose';
+import {SNSService} from "./SNS";
 
 class UserService{
 
@@ -50,9 +51,14 @@ class UserService{
     const user = await UserModel.findById(userId);
     if (user) {
       const newPoints = user.points + pointsToAdd;
-      await UserModel.findByIdAndUpdate(userId, {
+      const userUpdated = await UserModel.findByIdAndUpdate(userId, {
         points: newPoints
-      });
+      }, { new: true });
+      console.log('--------------------- addPoints userUpdated: ', userUpdated);
+      // SNS Event
+      if (userUpdated) {
+        SNSService.updateUserRewards(userUpdated);
+      }
     }
     return true;
   }
@@ -61,6 +67,16 @@ class UserService{
     const user = await UserModel.findById(userId);
 
     return user?.points ? user.points : 0;
+  }
+
+  public static async updatePointsSNS(userObject: any, userId: string) {
+    const user = await UserModel.findById(userId);
+    if (user) {
+      await UserModel.findByIdAndUpdate(userId, {
+        points: userObject.points
+      });
+    }
+    return true;
   }
 
 }

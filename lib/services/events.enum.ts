@@ -10,4 +10,6 @@ export enum Events {
   postDLLDelete = 'POST_DLL_DELETE',
   postView =  'POST_VIEW',
   blockPost = 'DECISION_BLOCK_POST',
+  rewardUserUpdatePoints = 'REWARD_USER_UPDATE_POINTS',
+  rewardPostPointsUpdatePoints = 'REWARD_POST_POINTS_UPDATE',
 }

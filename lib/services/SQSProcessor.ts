@@ -6,6 +6,8 @@ import type { IPostDLL } from '../DB/Models/Post-DLL';
 import type { IPost } from '../DB/Models/Post';
 import type mongoose from 'mongoose';
 import { ViewService } from './ViewService';
+import {IPostPointsSchema} from "../DB/Models/Post-points.schema";
+import {PointsService} from "./PointsService";
 
 
 class SQSProcessorService {
@@ -42,10 +44,10 @@ class SQSProcessorService {
     const {
       EVENT_TYPE, user, userId, token, updatedUser, post, postId,
       updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL,
-      viewedBy
+      viewedBy, postPoints
     } = parsedMessage;
     console.log(EVENT_TYPE, user, userId, token, updatedUser, post, postId,
-      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL, viewedBy);
+      updatedPost, deletedPost, postDLL, postDLLId, updatedPostDLL, deletedPostDLL, viewedBy, postPoints);
     switch (EVENT_TYPE) {
       case Events.userCreatedByPhone:
         return this._handleUserCreationByPhone(user, userId);
@@ -67,9 +69,33 @@ class SQSProcessorService {
         return this._handlePostDLLDelete(postDLLId);
       case Events.postView:
         return this._handlePostView(postId, viewedBy);
+      case Events.rewardUserUpdatePoints:
+        return this._handleRewardUserUpdatePoints(user, userId);
+      case Events.rewardPostPointsUpdatePoints:
+        return this._handleRewardPostPointsUpdate(postPoints);
       default:
         console.warn(`Unhandled event type: ${EVENT_TYPE}`);
         break;
+    }
+  }
+
+  private static async _handleRewardUserUpdatePoints(user: any, userId: string) {
+    try {
+      console.log('Admin service SQS _handleRewardUserUpdatePoints user:', user);
+      await UserService.updatePointsSNS(user, userId);
+    } catch (error) {
+      console.error('_handleRewardUserUpdatePoints-error', error);
+      throw error;
+    }
+  }
+
+  private static async _handleRewardPostPointsUpdate(postPoints: IPostPointsSchema) {
+    try {
+      console.log('Admin service SQS _handleRewardPostPointsUpdate postPoints:', postPoints);
+      await PointsService.updatePostPointsSNS(postPoints);
+    } catch (error) {
+      console.error('_handleRewardUserUpdatePoints-error', error);
+      throw error;
     }
   }
 
